@@ -203,7 +203,7 @@
     "path": "folders/Fonts.yy",
   },
   "resourceVersion": "1.0",
-  "name": "fntGUI",
+  "name": "fntGUIbody",
   "tags": [],
   "resourceType": "GMFont",
 }
