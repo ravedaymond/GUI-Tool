@@ -4,6 +4,10 @@ function GUI(){
 
 }
 
+function guiOverlapCollision(active_window, window, x_prev, y_prev) {
+	
+}
+
 /// @description Create a basic GUI static window
 /// @param _name Name of window.
 /// @param _x Initial x position (top left)
@@ -88,8 +92,10 @@ function guiStaticWindow(_name, _x, _y, _w, _h) constructor {
 /// @param _h Default height
 function guiDynamicWindow(_name, _x, _y, _w, _h) : guiStaticWindow(_name, _x, _y, _w, _h) constructor {
 	
-	
 	resize_box = 10;
+	
+	overlapLock = false;
+	overlapLockHover = false;
 	
 	static xscale = 1;
 	static yscale = 1;
@@ -131,6 +137,19 @@ function guiDynamicWindow(_name, _x, _y, _w, _h) : guiStaticWindow(_name, _x, _y
 		return mouse_check_button_pressed(mb_left) && point_in_rectangle(_mx, _my, x2()-resize_box, y2()-resize_box, x2(), y2());
 	}
 	
+	static hoverOverlapLock = function(_mx, _my) {
+		overlapLockHover = point_in_rectangle(_mx, _my, x2()-(title_bar*2), y, x2()-title_bar, y+(title_bar));
+		return overlapLockHover;
+	}
+	
+	static mouseOverlapLock = function(_mx, _my) {
+		var retval = hoverOverlapLock(_mx, _my) && mouse_check_button_pressed(mb_left);
+		if(retval) {
+			overlapLock = !overlapLock;	
+		}
+		return retval;
+	}
+	
 	static resize = function(_mx, _my) {
 		draw_set_alpha(0.45);
 		draw_set_color(c_blue);
@@ -140,32 +159,65 @@ function guiDynamicWindow(_name, _x, _y, _w, _h) : guiStaticWindow(_name, _x, _y
 	}
 	
 	static draw = function() {
-		// Draw Background
+		drawBackground();
+		drawContentArea();
+		drawTitleBar();
+		drawTitleName();
+		drawCloseButton();
+		drawOverlapLockButton();
+		drawResizeCorner();
+		draw_set_alpha(1);
+		draw_set_color(c_white);	
+	}
+	
+	static drawBackground = function() {
 		draw_set_alpha(0.6);
 		draw_set_color(c_dkgray);
-		draw_rectangle(x, y, x2(), y2(), false);
-		// Draw Content Area
+		draw_rectangle(x, y, x2(), y2(), false);	
+	}
+	
+	static drawContentArea = function() {
 		draw_rectangle(x+padding, y+title_bar+padding, x2()-padding, y2()-padding, false);
-
-		// Draw Title Bar
+	}
+	
+	static drawTitleBar = function() {
 		draw_set_alpha(0.75);
 		draw_set_color(c_ltgray);
 		draw_rectangle(x, y, x2()-title_bar, y+title_bar, false);
-		// Draw Title Name
+	}
+	
+	static drawTitleName = function() {
 		draw_set_color(c_black);
 		draw_set_font(global.gui_window_title_font);
 		draw_set_halign(fa_left);
 		draw_set_valign(fa_top);
 		draw_text(x, y, name);
-
-		// Draw Close Button
-		draw_set_color(c_red);
-		draw_rectangle(x2()-title_bar, y, x2(), y+title_bar, false);
-
-		// Draw Resize Corner
-		draw_rectangle(x2()-resize_box, y2()-resize_box, x2(), y2(), false);
-		draw_set_alpha(1);
-		draw_set_color(c_white);
 	}
+	
+	static drawCloseButton = function() {
+		draw_set_color(c_red);
+		draw_rectangle(x2()-title_bar, y, x2(), y+title_bar, false);	
+	}
+	
+	static drawOverlapLockButton = function() {
+		if(overlapLock) {
+			draw_set_color(c_orange);
+			if(overlapLockHover) {
+				draw_set_color(c_blue);
+			}
+		} else {
+			draw_set_color(c_blue);
+			if(overlapLockHover) {
+				draw_set_color(c_orange);	
+			}
+		}
+		draw_rectangle(x2()-(title_bar*2), y, x2()-title_bar, y+(title_bar), false);	
+	}
+	
+	static drawResizeCorner = function() {
+		draw_set_color(c_red);
+		draw_rectangle(x2()-resize_box, y2()-resize_box, x2(), y2(), false);
+	}
+	
 }
 	
