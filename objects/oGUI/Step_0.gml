@@ -1,13 +1,4 @@
 /// @description Control GUI Windows
-// Create new window
-if(mouse_check_button_pressed(mb_middle)) {
-	active_window = new guiStaticWindow("Window "+string(ds_list_size(windows)), mouse_gui_x, mouse_gui_y, 400, 350);
-	ds_list_add(windows, active_window);
-}
-if(mouse_check_button_pressed(mb_right)) {
-	active_window = new guiDynamicWindow("Window "+string(ds_list_size(windows)), mouse_gui_x, mouse_gui_y, 200, 300);
-	ds_list_add(windows, active_window);
-}
 if(!ds_list_empty(windows)) {
 	// Ensure active_window is assigned if a window exists.
 	if(active_window == undefined) {
@@ -63,14 +54,22 @@ if(!ds_list_empty(windows)) {
 				resizing = true;
 				window_set_cursor(cr_size_nwse);
 			}
+			/*
+				If the mouse is clicked while over the overlap lock button,
+				toggle the value of overlapLock.
+			*/
+			if(active_window.mouseOverlapLock(mouse_gui_x, mouse_gui_y)) {
+				console_log("overlap locked window", active_window.name);
+			}
+			/*
+				If the mouse is clicked while over the pinned button,
+				toggle the value of pinned.
+			*/
+			if(active_window.mousePinned(mouse_gui_x, mouse_gui_y)) {
+				console_log("pinned window", active_window.name);	
+			}
 		}
-		/*
-			If the mouse is found hovering over the overlap lock region,
-			set 
-		*/
-		if(active_window.mouseOverlapLock(mouse_gui_x, mouse_gui_y)) {
-			console_log("overlap locked window", active_window.name);
-		}
+		
 		/*
 			If the active_window is clicked on in the close region,
 			delete the struct reference from active_window and remove
@@ -99,11 +98,10 @@ if(grabbed) {
 	active_window.y = mouse_gui_y-grab_ydiff;
 	active_window.y = clamp(active_window.y, active_window.margin, window_get_height()-(active_window.height+active_window.margin));
 	var i = 0;
-	var x_dir = active_window.x - x_prev;
-	var y_dir = active_window.y - y_prev;
 	repeat(ds_list_size(windows)) {
 		var _w = windows[|i];
-		if(active_window != _w && (active_window.overlapLock || _w.overlapLock)) {
+		if(active_window != _w && (active_window.overlapLock || _w.overlapLock)) { // ((instanceof(active_window) == gui_dynamic && instanceof(_w) == gui_dynamic) &&
+			#region First Variant
 			//if( 
 			//	point_in_rectangle(active_window.x, active_window.y, _w.x-_w.margin, _w.y-_w.margin, _w.x2()+_w.margin, _w.y2()+_w.margin) ||
 			//	point_in_rectangle(active_window.x, active_window.y2(), _w.x-_w.margin, _w.y-_w.margin, _w.x2()+_w.margin, _w.y2()+_w.margin) ||
@@ -117,7 +115,8 @@ if(grabbed) {
 			//	active_window.x = x_prev;
 			//	active_window.y = y_prev;
 			//}
-			// Second Variant
+			#endregion
+			#region Second Variant
 			//var x_dir = sign(active_window.x - x_prev);
 			//var y_dir = sign(active_window.y - y_prev);
 			//if(
@@ -127,40 +126,42 @@ if(grabbed) {
 			//) { // Horizontal Collision
 			//	active_window.x = x_prev;
 			//}
-			// Third Variant
-			if(rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x, _w.y2()) || rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x2(), _w.y, _w.x2(), _w.y2())) {
-				active_window.x = x_prev;
-				if(x_dir > 0) {
-					//while(active_window.x2() < _w.x-1) {
-					//	active_window.x++;
-					//}
-					active_window.x = _w.x-1-active_window.width;
-				}
-				if(x_dir < 0) {
-					//while(active_window.x > _w.x2()+1) {
-					//	active_window.x--;
-					//}
-					active_window.x = _w.x2()+1;
-				}
-				window_mouse_set(clamp(mouse_gui_x, active_window.x, active_window.x2()), mouse_gui_y);
-			}
-			if(rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x2(), _w.y) || rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y2(), _w.x2(), _w.y2())) {
-				active_window.y = y_prev;
-				if(y_dir > 0) {
-					//while(active_window.y2() < _w.y-1) {
-					//	active_window.y++;	
-					//}
-					active_window.y = _w.y-1-active_window.height;
-				}
-				if(y_dir < 0) {
-					//while(active_window.y < _w.y2()+1) {
-					//	active_window.y--;
-					//}
-					active_window.y = _w.y2()+1;
-				}
-				window_mouse_set(mouse_gui_x, clamp(mouse_gui_y, active_window.y, active_window.y2()));
-			}
-			// Fourth Variant
+			#endregion
+			#region Third Variant
+			//if(rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x, _w.y2()) || rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x2(), _w.y, _w.x2(), _w.y2())) {
+			//	active_window.x = x_prev;
+			//	if(x_dir > 0) {
+			//		//while(active_window.x2() < _w.x-1) {
+			//		//	active_window.x++;
+			//		//}
+			//		active_window.x = _w.x-1-active_window.width;
+			//	}
+			//	if(x_dir < 0) {
+			//		//while(active_window.x > _w.x2()+1) {
+			//		//	active_window.x--;
+			//		//}
+			//		active_window.x = _w.x2()+1;
+			//	}
+			//	window_mouse_set(clamp(mouse_gui_x, active_window.x, active_window.x2()), mouse_gui_y);
+			//}
+			//if(rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x2(), _w.y) || rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y2(), _w.x2(), _w.y2())) {
+			//	active_window.y = y_prev;
+			//	if(y_dir > 0) {
+			//		//while(active_window.y2() < _w.y-1) {
+			//		//	active_window.y++;	
+			//		//}
+			//		active_window.y = _w.y-1-active_window.height;
+			//	}
+			//	if(y_dir < 0) {
+			//		//while(active_window.y < _w.y2()+1) {
+			//		//	active_window.y--;
+			//		//}
+			//		active_window.y = _w.y2()+1;
+			//	}
+			//	window_mouse_set(mouse_gui_x, clamp(mouse_gui_y, active_window.y, active_window.y2()));
+			//}
+			#endregion
+			#region Fourth Variant
 			//if(rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x-_w.margin, _w.y, _w.x, _w.y2()) || rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x2()+_w.margin, _w.y, _w.x2(), _w.y2())) {
 			//	active_window.x = x_prev;
 			//	if(x_dir > 0) {
@@ -180,18 +181,41 @@ if(grabbed) {
 			//		active_window.y = _w.y2()+_w.margin;
 			//	}
 			//}
-			
-			
+			#endregion
 			/**
 			
 			The problem with the above is that left/right is being checked prior to up/down, and not simultaneously. Due to the way moving the windows works (without different speed values like moving
 			a character), as soon as it starts to slide right while in the same recatangle_in_rectangle collision box it will clip to the x side it is expecting to be encountering.
 			
 			Eg. When "touching" either the bottom or the top of another window while moving right will place it on the left side of the window; while moving left it will place it on the right.
-			
-			
-			
+
 			*/
+			#region Fifth Variant -- In Use
+			if((x_prev+active_window.width) <= _w.x) { // Moving Right; Collision with active windows right edge and other windows left edge
+				if(active_window.x2() > _w.x && rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x2(), _w.y2())) {
+					active_window.x = _w.x-1-active_window.width;
+				}
+				window_mouse_set(clamp(mouse_gui_x, active_window.x, active_window.x2()), mouse_gui_y);
+			}
+			if(x_prev >= _w.x2()) { // Moving Left; Collision with active windows left edge and other windows right edge
+				if(active_window.x < _w.x2() && rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x2(), _w.y2())) {
+					active_window.x = _w.x2()+1;
+				}
+				window_mouse_set(clamp(mouse_gui_x, active_window.x, active_window.x2()), mouse_gui_y);
+			}
+			if((y_prev+active_window.height) <= _w.y) { // Moving Down; Collision with active windows bottom edge and other windows top edge
+				if(active_window.y2() > _w.y && rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x2(), _w.y2())) {
+					active_window.y = _w.y-1-active_window.height;	
+				}
+				window_mouse_set(mouse_gui_x, clamp(mouse_gui_y, active_window.y, active_window.y2()));
+			}
+			if(y_prev >= _w.y2()) { // Moving Up; Collision with active windows top edge and other windows bottom edge
+				if(active_window.y < _w.y2() && rectangle_in_rectangle(active_window.x, active_window.y, active_window.x2(), active_window.y2(), _w.x, _w.y, _w.x2(), _w.y2())) {
+					active_window.y = _w.y2()+1;	
+				}
+				window_mouse_set(mouse_gui_x, clamp(mouse_gui_y, active_window.y, active_window.y2()));
+			}
+			#endregion
 		}
 		i++;
 	}

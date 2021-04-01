@@ -1,0 +1,3 @@
+/// @description 
+active_window = new guiStaticWindow("Window "+string(ds_list_size(windows)), mouse_gui_x, mouse_gui_y, 400, 350);
+ds_list_add(windows, active_window);

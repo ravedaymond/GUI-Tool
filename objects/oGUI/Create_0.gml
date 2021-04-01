@@ -3,6 +3,8 @@
 global.gui_window_title_font = fntGUItitle;
 global.gui_window_body_font = fntGUIbody;
 
+#macro gui_static "guiStaticWindow"
+#macro gui_dynamic "guiDynamicWindow"
 #macro mouse_gui_x window_mouse_get_x()
 #macro mouse_gui_y window_mouse_get_y()
 
@@ -14,3 +16,11 @@ grab_xdiff = 0;
 grab_ydiff = 0;
 
 resizing = false;
+
+// Create new window
+if(mouse_check_button_pressed(mb_middle)) {
+	
+}
+if(mouse_check_button_pressed(mb_right)) {
+	
+}
