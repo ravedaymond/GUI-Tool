@@ -4,7 +4,7 @@
 /// @param _y Initial y position (top left)
 /// @param _w Default width
 /// @param _h Default height
-function guiStaticWindow(_name, _x, _y, _w, _h) constructor {
+function GuiStaticWindow(_name, _x, _y, _w, _h) constructor {
 	name = _name;
 	x = _x;
 	y = _y;

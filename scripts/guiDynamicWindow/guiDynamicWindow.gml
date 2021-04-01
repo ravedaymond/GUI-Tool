@@ -4,7 +4,7 @@
 /// @param _y Initial y position (top left)
 /// @param _w Default width
 /// @param _h Default height
-function guiDynamicWindow(_name, _x, _y, _w, _h) : guiStaticWindow(_name, _x, _y, _w, _h) constructor {
+function GuiDynamicWindow(_name, _x, _y, _w, _h) : GuiStaticWindow(_name, _x, _y, _w, _h) constructor {
 	
 	resize_box = 10;
 

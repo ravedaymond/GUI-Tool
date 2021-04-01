@@ -2,11 +2,10 @@
   "resources": [
     {"id":{"name":"Support","path":"scripts/Support/Support.yy",},"order":1,},
     {"id":{"name":"fntGUItitle","path":"fonts/fntGUItitle/fntGUItitle.yy",},"order":2,},
-    {"id":{"name":"guiStaticWindow","path":"scripts/guiStaticWindow/guiStaticWindow.yy",},"order":3,},
+    {"id":{"name":"GuiStaticWindow","path":"scripts/GuiStaticWindow/GuiStaticWindow.yy",},"order":3,},
     {"id":{"name":"oGUI","path":"objects/oGUI/oGUI.yy",},"order":0,},
     {"id":{"name":"fntGUIbody","path":"fonts/fntGUIbody/fntGUIbody.yy",},"order":1,},
-    {"id":{"name":"GUI","path":"scripts/GUI/GUI.yy",},"order":0,},
-    {"id":{"name":"guiDynamicWindow","path":"scripts/guiDynamicWindow/guiDynamicWindow.yy",},"order":2,},
+    {"id":{"name":"GuiDynamicWindow","path":"scripts/GuiDynamicWindow/GuiDynamicWindow.yy",},"order":2,},
     {"id":{"name":"Demo","path":"rooms/Demo/Demo.yy",},"order":0,},
   ],
   "Options": [

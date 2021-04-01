@@ -3,8 +3,8 @@
 global.gui_window_title_font = fntGUItitle;
 global.gui_window_body_font = fntGUIbody;
 
-#macro gui_static "guiStaticWindow"
-#macro gui_dynamic "guiDynamicWindow"
+#macro gui_static "GuiStaticWindow"
+#macro gui_dynamic "GuiDynamicWindow"
 #macro mouse_gui_x window_mouse_get_x()
 #macro mouse_gui_y window_mouse_get_y()
 

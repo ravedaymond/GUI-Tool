@@ -24,6 +24,7 @@ if(!ds_list_empty(windows)) {
 					active_window = _window;
 					ds_list_delete(windows, i);
 					ds_list_add(windows, _window);
+					break;
 				}
 				i++;
 			}
@@ -32,7 +33,7 @@ if(!ds_list_empty(windows)) {
 		
 		#region Check for interaction with active_window
 		// Allow resize and moving for only dynamic windows
-		if(instanceof(active_window) == "guiDynamicWindow") {
+		if(instanceof(active_window) == gui_dynamic) {
 			/*
 				If the active_window is grabbed in the title region, set 
 				grabbed=true and record the inital difference between the 
